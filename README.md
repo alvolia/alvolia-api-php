@@ -11,5 +11,11 @@ $client = new Alvolia\API\Client('ADB-XXXXXXXXXX', 'TOKEN_FROM_INTERFACE');
 $recommender = $client->recommender();
 
 // get recommendations
-$res = $recommender->recommend('USER_ID', 'ITEM_IDENTIFIER', 'RECOMMENDER_UUID');
+$result = $recommender->recommend('USER_ID', 'ITEM_IDENTIFIER', 'RECOMMENDER_UUID');
+
+// get top 3 items based on content based similarity
+$items = $result->contentBasedItems(3); // associative array of ITEM_ID -> SIMILARITY
+
+// get top 5 items based on collaborative filtering
+$items = $result->collaborativeItems(5); // associative array of ITEM_ID -> SIMILARITY
 ```
