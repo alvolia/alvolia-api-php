@@ -21,6 +21,14 @@ class Recommender {
             )
         );
     }
+
+    public function recommenders() {
+        return new Recommenders(
+            $this->_client->get(
+                'recommendations/list'
+            )
+        );
+    }
 }
 
 class RecommenderResponse {
@@ -57,5 +65,24 @@ class RecommenderResponse {
                 $content[$k] = $v;
             }
         }
+    }
+}
+
+class Recommenders {
+    protected $_recommenders;
+
+    public function __construct($recommenders) {
+        $this->_recommenders = array();
+        if($recommenders) {
+            foreach((array) $recommenders->recommenders as $k => $v) {
+                array_push(
+                    $this->_recommenders, (array) $v
+                );
+            }
+        }
+    }
+
+    public function get() {
+        return $this->_recommenders;
     }
 }

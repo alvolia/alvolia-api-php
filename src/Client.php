@@ -37,6 +37,24 @@ class Client {
         }
     }
 
+    public function get($endpoint) {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $this->endpointURL($endpoint));
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $this->defaultHeaders());
+
+        $response_data = curl_exec($ch);
+        $err_code = curl_errno($ch);
+        curl_close ($ch);
+        if ($err_code == 0) {
+            return json_decode($response_data, false);
+        } else {
+            return null;
+        }
+    }
+
     protected function defaultHeaders() {
         return array(
             'X-Site: ' . $this->_clientID,
