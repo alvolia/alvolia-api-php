@@ -10,6 +10,9 @@ $client = new Alvolia\API\Client('ADB-XXXXXXXXXX', 'TOKEN_FROM_INTERFACE');
 // get recommender client instance
 $recommender = $client->recommender();
 
+// get list available recommenders
+$recommenders = $recommender->recommenders()->get();
+
 // get recommendations
 $result = $recommender->recommend('USER_ID', 'ITEM_IDENTIFIER', 'RECOMMENDER_UUID');
 
