@@ -5,7 +5,7 @@
     "require": {
         "ext-curl": "^0.0.0"
     },
-    "license": "Free",
+    "license": "MIT",
     "authors": [
         {
             "name": "Matej Kloska",
