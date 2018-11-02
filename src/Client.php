@@ -3,15 +3,23 @@
 namespace Alvolia\API;
 
 class Client {
+    // points to domain where API seats
     const API_ROOT = 'https://api.adboost.sk';
+
+    // API_VERSION points always to latest version of API
+    // if you want to use older version, please specify it in constructor of client
     const API_VERSION = 'v201804';
 
     protected $_clientID;
-    protected  $_token;
+    protected $_token;
+    protected $_apiVersion;
+    protected $_apiRoot;
 
-    public function __construct($clientID, $token) {
+    public function __construct($clientID, $token, $apiRoot = null, $apiVersion = null) {
         $this->_clientID = $clientID;
         $this->_token = $token;
+        $this->_apiVersion = $apiVersion != null ? $apiVersion : self::API_VERSION;
+        $this->_apiRoot = $apiRoot != null ? $apiRoot : self::API_ROOT;
     }
 
     public function recommender() {
@@ -76,7 +84,7 @@ class Client {
     }
 
     protected function endpointURL($endpoint) {
-        return self::API_ROOT . '/' . self::API_VERSION . '/' . ltrim($endpoint, '/');
+        return $this->_apiRoot . '/' . $this->_apiVersion . '/' . ltrim($endpoint, '/');
     }
 
     protected function initializeCURLHandle($url) {
