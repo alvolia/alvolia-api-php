@@ -57,14 +57,17 @@ class RecommenderResponse {
     }
 
     public function mostSimilarItems($n = 5) {
-        $content = (array) $this->_response->contentbased_items;
+        $items = (array) $this->_response->contentbased_items;
         foreach((array) $this->_response->collaborative_items as $k => $v) {
-            if(!array_key_exists($k, $content)) {
-                $content[$k] = $v;
+            if(!array_key_exists($k, $items)) {
+                $items[$k] = $v;
             } elseif($content[$k] < $v) {
-                $content[$k] = $v;
+                $items[$k] = $v;
             }
         }
+        arsort($items);
+
+        return array_slice($items, 0, $n);
     }
 }
 
