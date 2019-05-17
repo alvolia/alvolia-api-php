@@ -14,7 +14,7 @@ class Recommender {
             $this->_client->post(
                 'recommendations/recommend',
                 array(
-                    'product_id' => $itemID,
+                    'item_id' => $itemID,
                     'user_id' => $userID,
                     'recommender_uid' => $recommenderID,
                 )
@@ -35,6 +35,7 @@ class RecommenderResponse {
     protected $_response;
     public function __construct($recommendationResponse) {
         $this->_response = $recommendationResponse;
+
         if(!property_exists($this->_response, 'contentbased_items')) {
             $this->_response->contentbased_items = array();
         }

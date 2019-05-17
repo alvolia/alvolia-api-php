@@ -8,7 +8,7 @@ class Client {
 
     // API_VERSION points always to latest version of API
     // if you want to use older version, please specify it in constructor of client
-    const API_VERSION = 'v201804';
+    const API_VERSION = 'v201902';
 
     protected $_clientID;
     protected $_token;
@@ -27,13 +27,16 @@ class Client {
     }
 
     public function post($endpoint, $data) {
+        $encoded_data = json_encode($data);
+
         $ch = $this->initializeCURLHandle(
-            $this->endpointURL($endpoint)
+            $this->endpointURL($endpoint),
+            strlen($encoded_data)
         );
 
         // options for HTTP POST request
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $encoded_data);
 
         // fire request
         $response_data = curl_exec($ch);
@@ -41,10 +44,12 @@ class Client {
         // check if any error occured during request
         $err_code = curl_errno($ch);
 
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
         // do not forget to free memory
         curl_close ($ch);
 
-        if ($err_code == 0) {
+        if ($err_code == 0 && $httpcode < 300) {
             return json_decode($response_data, false);
         } else {
             return null;
@@ -72,22 +77,28 @@ class Client {
         }
     }
 
-    protected function defaultHeaders() {
-        return array(
+    protected function defaultHeaders($contentLength) {
+        $headers = array(
             // required to identifie site for API requests
             'X-Site: ' . $this->_clientID,
             // token identifies who is accessing data
             'X-Token: ' . $this->_token,
             // API requires this content type
-            "Content-Type: application/x-www-form-urlencoded",
+            "Content-Type: application/json",
         );
+
+        if($contentLength != 0) {
+            $headers['Content-Length'] = $contentLength;
+        }
+
+        return $headers;
     }
 
     protected function endpointURL($endpoint) {
         return $this->_apiRoot . '/' . $this->_apiVersion . '/' . ltrim($endpoint, '/');
     }
 
-    protected function initializeCURLHandle($url) {
+    protected function initializeCURLHandle($url, $contentLength) {
         $ch = curl_init();
 
         // URL is required of any request, so set it at the beginning of initialization
@@ -102,7 +113,7 @@ class Client {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         // headers are always the same - we need to send auth identifier and token
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $this->defaultHeaders());
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $this->defaultHeaders($contentLength));
 
         return $ch;
     }
