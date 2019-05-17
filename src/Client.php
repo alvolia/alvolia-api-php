@@ -98,7 +98,7 @@ class Client {
         return $this->_apiRoot . '/' . $this->_apiVersion . '/' . ltrim($endpoint, '/');
     }
 
-    protected function initializeCURLHandle($url, $contentLength) {
+    protected function initializeCURLHandle($url, $contentLength=0) {
         $ch = curl_init();
 
         // URL is required of any request, so set it at the beginning of initialization
