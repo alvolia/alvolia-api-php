@@ -44,12 +44,12 @@ class Client {
         // check if any error occured during request
         $err_code = curl_errno($ch);
 
-        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         // do not forget to free memory
         curl_close ($ch);
 
-        if ($err_code == 0 && $httpcode < 300) {
+        if ($err_code == 0 && $http_code < 300) {
             return json_decode($response_data, false);
         } else {
             return null;
@@ -67,10 +67,12 @@ class Client {
         // check error code
         $err_code = curl_errno($ch);
 
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
         // free memory
         curl_close ($ch);
 
-        if ($err_code == 0) {
+        if ($err_code == 0 && $http_code < 300) {
             return json_decode($response_data, false);
         } else {
             return null;
