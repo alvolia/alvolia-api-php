@@ -36,6 +36,10 @@ class RecommenderResponse {
     public function __construct($recommendationResponse) {
         $this->_response = $recommendationResponse;
 
+        if(!$this->_response) {
+            $this->_response = (object) array();
+        }
+
         if(!property_exists($this->_response, 'contentbased_items')) {
             $this->_response->contentbased_items = array();
         }
